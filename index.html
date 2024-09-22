@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa Eleitoral e Sugestões para a Cidade</title>
+    <link rel="stylesheet" type="text/css" href="assents/css/styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1>Pesquisa Eleitoral 2024</h1>
+            <div id="candidates"></div>
+            <div id="results"></div>
+            <div id="message"></div>
+            
+            <div class="comment-section">
+                <h2>Sugestões para Melhorias na Cidade</h2>
+                <textarea id="commentInput" placeholder="Compartilhe suas ideias para melhorar nossa cidade..."></textarea>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="anonymousCheck">
+                    <label for="anonymousCheck">Comentar anonimamente</label>
+                </div>
+                <input type="text" id="nameInput" placeholder="Seu nome">
+                <button class="submit-btn" id="submitCommentBtn">Enviar Sugestão</button>
+            </div> 
+        </div>
+        
+        <div class="container">
+            <h2>Sugestões da Comunidade</h2>
+            <div id="commentsContainer" class="comments-container">
+                <!-- Os comentários serão inseridos aqui dinamicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2024 Jean Vieira. Todos os direitos reservados.
+    </footer>
+
+    <script src="assents/js/script.js" type="module"></script>
+</body>
+</html>
