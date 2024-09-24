@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getFirestore, setDoc, doc, getDoc, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getFirestore, setDoc, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // Configurações do Firebase
 const firebaseConfig = {
@@ -82,7 +82,11 @@ window.vote = async function(candidateName) {
         disableVoteButtons();
     } catch (error) {
         console.error("Erro ao registrar voto: ", error);
-        message.textContent = "Erro ao registrar seu voto. Tente novamente.";
+        if (error.code === 'resource-exhausted') {
+            message.textContent = "Quota excedida. Tente novamente mais tarde.";
+        } else {
+            message.textContent = "Erro ao registrar seu voto. Tente novamente.";
+        }
     }
 };
 
@@ -117,14 +121,23 @@ function updateResults(votesData) {
     results.innerHTML = resultsHtml;
 }
 
-// Escuta atualizações em tempo real para cada candidato
-onSnapshot(collection(db, "votes"), (snapshot) => {
+// Função para carregar os votos
+async function loadVotes() {
+    const cachedVotes = localStorage.getItem('votes');
+    if (cachedVotes) {
+        updateResults(JSON.parse(cachedVotes));
+        return;
+    }
+    
+    const snapshot = await getDocs(collection(db, "votes"));
     let votesData = {};
     snapshot.forEach((doc) => {
-        votesData[doc.id] = doc.data().count;
+        votesData[doc.id] = doc.data().count || 0;
     });
+    
+    localStorage.setItem('votes', JSON.stringify(votesData));
     updateResults(votesData);
-});
+}
 
 // Verifica se já votou ao carregar a página
 if (localStorage.getItem('voted_' + machineId)) {
@@ -200,6 +213,7 @@ async function renderComments() {
 
 // Chama a função de renderização de comentários ao carregar a página
 window.onload = function() {
+    loadVotes(); // Carrega os votos
     renderComments();
     document.getElementById('submitCommentBtn').addEventListener('click', submitComment);
 };
